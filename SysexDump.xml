@@ -1,0 +1,560 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<lexml version='3'>
+<node ID='7e444054-4a69-11ee-820a-9cb6d0d7c7de' type='GROUP'>
+<properties>
+<property type='b'>
+<key><![CDATA[background]]></key>
+<value>1</value>
+</property>
+<property type='c'>
+<key><![CDATA[color]]></key>
+<value>
+<r>0</r>
+<g>0</g>
+<b>0</b>
+<a>1</a>
+</value>
+</property>
+<property type='f'>
+<key><![CDATA[cornerRadius]]></key>
+<value>1</value>
+</property>
+<property type='r'>
+<key><![CDATA[frame]]></key>
+<value>
+<x>0</x>
+<y>0</y>
+<w>440</w>
+<h>260</h>
+</value>
+</property>
+<property type='b'>
+<key><![CDATA[grabFocus]]></key>
+<value>0</value>
+</property>
+<property type='b'>
+<key><![CDATA[interactive]]></key>
+<value>0</value>
+</property>
+<property type='b'>
+<key><![CDATA[locked]]></key>
+<value>0</value>
+</property>
+<property type='i'>
+<key><![CDATA[orientation]]></key>
+<value>0</value>
+</property>
+<property type='b'>
+<key><![CDATA[outline]]></key>
+<value>1</value>
+</property>
+<property type='i'>
+<key><![CDATA[outlineStyle]]></key>
+<value>0</value>
+</property>
+<property type='i'>
+<key><![CDATA[pointerPriority]]></key>
+<value>0</value>
+</property>
+<property type='s'>
+<key><![CDATA[script]]></key>
+<value><![CDATA[function onReceiveMIDI(message, connections)
+  -- Check connections table, if necessary
+  handleSysexMessage(message)
+end
+
+function handleSysexMessage(message)
+  -- Verify this is a sysex message
+  if (message[1] ~= MIDIMessageType.SYSTEMEXCLUSIVE) then
+    return
+  end
+  
+  -- Check ID
+  if (message[2] ~= 0x00 or message[3] ~= 0x02 or message[4] ~= 0x5A) then
+    return
+  end
+  
+  -- Validate checksum
+  local checksum = 0
+  for i=5, (#message - 2) do
+    checksum = checksum + message[i]
+  end
+  checksum = checksum % 128
+  checksum = 128 - checksum
+  
+  if (checksum ~= message[#message - 1]) then
+    print("Sysex dump checksum fail")
+    return
+  end
+  
+  -- Read the control name, starting at byte 6, until we hit null
+  local idx = 6
+  local ctrlName = ""
+  while (message[idx] ~= 0x00) do
+    ctrlName = ctrlName .. string.char(message[idx])
+    idx = idx + 1
+  end
+  
+  local targetCtrl = root:findByName(ctrlName, true)
+  
+  if (not targetCtrl) then
+    print("Sysex dump references unknown control", ctrlName)
+    return
+  end
+  
+  -- Read the data, starting at the next byte after control name
+  idx = idx + 1
+  local data = ""
+  while (message[idx] ~= 0x00) do
+    data = data .. string.char(message[idx])
+    idx = idx + 1
+  end
+  
+  -- Set the control's property, based on opcode in 5th byte
+  if (message[5] == 0x00) then
+    targetCtrl.tag = data
+  else
+   targetCtrl.values.text = data
+  end
+end]]></value>
+</property>
+<property type='i'>
+<key><![CDATA[shape]]></key>
+<value>1</value>
+</property>
+<property type='b'>
+<key><![CDATA[visible]]></key>
+<value>1</value>
+</property>
+</properties>
+<values>
+<value>
+<key><![CDATA[touch]]></key>
+<locked>0</locked>
+<lockedDefaultCurrent>0</lockedDefaultCurrent>
+<default><![CDATA[false]]></default>
+<defaultPull>0</defaultPull>
+</value>
+</values>
+<children>
+<node ID='823c0cfa-4a69-11ee-9e62-9cb6d0d7c7de' type='TEXT'>
+<properties>
+<property type='b'>
+<key><![CDATA[background]]></key>
+<value>1</value>
+</property>
+<property type='c'>
+<key><![CDATA[color]]></key>
+<value>
+<r>1</r>
+<g>0</g>
+<b>0</b>
+<a>1</a>
+</value>
+</property>
+<property type='f'>
+<key><![CDATA[cornerRadius]]></key>
+<value>1</value>
+</property>
+<property type='i'>
+<key><![CDATA[font]]></key>
+<value>0</value>
+</property>
+<property type='r'>
+<key><![CDATA[frame]]></key>
+<value>
+<x>40</x>
+<y>40</y>
+<w>240</w>
+<h>100</h>
+</value>
+</property>
+<property type='b'>
+<key><![CDATA[grabFocus]]></key>
+<value>1</value>
+</property>
+<property type='b'>
+<key><![CDATA[interactive]]></key>
+<value>0</value>
+</property>
+<property type='b'>
+<key><![CDATA[locked]]></key>
+<value>0</value>
+</property>
+<property type='s'>
+<key><![CDATA[name]]></key>
+<value><![CDATA[txtData]]></value>
+</property>
+<property type='i'>
+<key><![CDATA[orientation]]></key>
+<value>0</value>
+</property>
+<property type='b'>
+<key><![CDATA[outline]]></key>
+<value>1</value>
+</property>
+<property type='i'>
+<key><![CDATA[outlineStyle]]></key>
+<value>1</value>
+</property>
+<property type='i'>
+<key><![CDATA[pointerPriority]]></key>
+<value>0</value>
+</property>
+<property type='i'>
+<key><![CDATA[shape]]></key>
+<value>1</value>
+</property>
+<property type='i'>
+<key><![CDATA[textAlignH]]></key>
+<value>1</value>
+</property>
+<property type='i'>
+<key><![CDATA[textAlignV]]></key>
+<value>1</value>
+</property>
+<property type='b'>
+<key><![CDATA[textClip]]></key>
+<value>1</value>
+</property>
+<property type='c'>
+<key><![CDATA[textColor]]></key>
+<value>
+<r>1</r>
+<g>1</g>
+<b>1</b>
+<a>1</a>
+</value>
+</property>
+<property type='i'>
+<key><![CDATA[textSize]]></key>
+<value>14</value>
+</property>
+<property type='b'>
+<key><![CDATA[textWrap]]></key>
+<value>1</value>
+</property>
+<property type='b'>
+<key><![CDATA[visible]]></key>
+<value>1</value>
+</property>
+</properties>
+<values>
+<value>
+<key><![CDATA[text]]></key>
+<locked>0</locked>
+<lockedDefaultCurrent>1</lockedDefaultCurrent>
+<default><![CDATA["Give us common folk one taste of power and we're like the lion who tasted man, nothing is ever so sweet again." -- Lord Varys
+]]></default>
+<defaultPull>0</defaultPull>
+</value>
+<value>
+<key><![CDATA[touch]]></key>
+<locked>0</locked>
+<lockedDefaultCurrent>0</lockedDefaultCurrent>
+<default><![CDATA[false]]></default>
+<defaultPull>0</defaultPull>
+</value>
+</values>
+</node>
+<node ID='aa1e9a58-4a69-11ee-bbec-9cb6d0d7c7de' type='BUTTON'>
+<properties>
+<property type='b'>
+<key><![CDATA[background]]></key>
+<value>1</value>
+</property>
+<property type='i'>
+<key><![CDATA[buttonType]]></key>
+<value>0</value>
+</property>
+<property type='c'>
+<key><![CDATA[color]]></key>
+<value>
+<r>0.988896</r>
+<g>0.0666666</g>
+<b>1</b>
+<a>1</a>
+</value>
+</property>
+<property type='f'>
+<key><![CDATA[cornerRadius]]></key>
+<value>1</value>
+</property>
+<property type='r'>
+<key><![CDATA[frame]]></key>
+<value>
+<x>300</x>
+<y>40</y>
+<w>106</w>
+<h>40</h>
+</value>
+</property>
+<property type='b'>
+<key><![CDATA[grabFocus]]></key>
+<value>1</value>
+</property>
+<property type='b'>
+<key><![CDATA[interactive]]></key>
+<value>1</value>
+</property>
+<property type='b'>
+<key><![CDATA[locked]]></key>
+<value>0</value>
+</property>
+<property type='s'>
+<key><![CDATA[name]]></key>
+<value><![CDATA[btnDumpToSysex]]></value>
+</property>
+<property type='i'>
+<key><![CDATA[orientation]]></key>
+<value>0</value>
+</property>
+<property type='b'>
+<key><![CDATA[outline]]></key>
+<value>1</value>
+</property>
+<property type='i'>
+<key><![CDATA[outlineStyle]]></key>
+<value>1</value>
+</property>
+<property type='i'>
+<key><![CDATA[pointerPriority]]></key>
+<value>0</value>
+</property>
+<property type='b'>
+<key><![CDATA[press]]></key>
+<value>1</value>
+</property>
+<property type='b'>
+<key><![CDATA[release]]></key>
+<value>0</value>
+</property>
+<property type='s'>
+<key><![CDATA[script]]></key>
+<value><![CDATA[function onValueChanged(key)
+  if (key ~= "touch" or not self.values.touch) then
+    return
+  end
+  
+  sendSysexDump('txtData', 1, 1)
+  
+end
+
+function sendSysexDump(ctrlName, opcode, connId)
+  -- Get the data we want to serialize
+  -- as a string - this could be the tag
+  -- or values.text property. If the tag
+  -- is storing JSON or delimited values
+  -- then use the tag property.
+
+  local payload = {}
+  payload[1] = 0xF0 -- Start Sysex block
+  payload[2] = 0x00 -- Sysex manufacturer ID
+  payload[3] = 0x02
+  payload[4] = 0x5A
+  payload[5] = opcode -- 0 = Tag, 1 = values.text
+  
+  -- Write control name to sysex message
+  for i=1,#ctrlName do
+    table.insert(payload, string.byte(string.sub(ctrlName, i, i)))
+  end
+  
+  table.insert(payload, 0x00) -- Null terminator 
+  
+  -- Get the data to include in the sysex message
+  local control = root:findByName(ctrlName, true);
+  local data
+  if (opcode == 0) then
+    data = control.tag
+  else
+    data = control.values.text
+  end
+
+  -- Write the control's data to the sysex message
+  for i=1,#data do
+    local b = string.byte(string.sub(data, i, i))
+    if (b > 127) then
+      print(ctrlName, ' contains invalid char')
+      return
+    end
+    table.insert(payload, b)
+  end
+  
+  table.insert(payload, 0x00) -- Null terminator 
+  
+  -- Compute the checksum (Roland algorithm)
+  local checksum = 0
+  for i=5, #payload do
+    checksum = checksum + payload[i]
+  end
+  checksum = checksum % 128
+  checksum = 128 - checksum
+  
+  table.insert(payload, checksum)
+  table.insert(payload, 0xF7)
+  
+  -- Send sysex message
+  local connections = {}
+  for i=1,5 do
+    if (connId == i) then
+      connections[i] = true
+    else
+      connections[i] = false
+    end
+  end
+  
+  sendMIDI(payload, connections)
+end]]></value>
+</property>
+<property type='i'>
+<key><![CDATA[shape]]></key>
+<value>1</value>
+</property>
+<property type='b'>
+<key><![CDATA[valuePosition]]></key>
+<value>0</value>
+</property>
+<property type='b'>
+<key><![CDATA[visible]]></key>
+<value>1</value>
+</property>
+</properties>
+<values>
+<value>
+<key><![CDATA[touch]]></key>
+<locked>0</locked>
+<lockedDefaultCurrent>0</lockedDefaultCurrent>
+<default><![CDATA[false]]></default>
+<defaultPull>0</defaultPull>
+</value>
+<value>
+<key><![CDATA[x]]></key>
+<locked>0</locked>
+<lockedDefaultCurrent>0</lockedDefaultCurrent>
+<default><![CDATA[0]]></default>
+<defaultPull>0</defaultPull>
+</value>
+</values>
+</node>
+<node ID='1fe5b85c-4a6a-11ee-9f36-9cb6d0d7c7de' type='LABEL'>
+<properties>
+<property type='b'>
+<key><![CDATA[background]]></key>
+<value>0</value>
+</property>
+<property type='c'>
+<key><![CDATA[color]]></key>
+<value>
+<r>1</r>
+<g>0</g>
+<b>0</b>
+<a>1</a>
+</value>
+</property>
+<property type='f'>
+<key><![CDATA[cornerRadius]]></key>
+<value>1</value>
+</property>
+<property type='i'>
+<key><![CDATA[font]]></key>
+<value>0</value>
+</property>
+<property type='r'>
+<key><![CDATA[frame]]></key>
+<value>
+<x>293</x>
+<y>40</y>
+<w>120</w>
+<h>40</h>
+</value>
+</property>
+<property type='b'>
+<key><![CDATA[grabFocus]]></key>
+<value>0</value>
+</property>
+<property type='b'>
+<key><![CDATA[interactive]]></key>
+<value>0</value>
+</property>
+<property type='b'>
+<key><![CDATA[locked]]></key>
+<value>0</value>
+</property>
+<property type='s'>
+<key><![CDATA[name]]></key>
+<value><![CDATA[lblDumpToSysex]]></value>
+</property>
+<property type='i'>
+<key><![CDATA[orientation]]></key>
+<value>0</value>
+</property>
+<property type='b'>
+<key><![CDATA[outline]]></key>
+<value>0</value>
+</property>
+<property type='i'>
+<key><![CDATA[outlineStyle]]></key>
+<value>1</value>
+</property>
+<property type='i'>
+<key><![CDATA[pointerPriority]]></key>
+<value>0</value>
+</property>
+<property type='i'>
+<key><![CDATA[shape]]></key>
+<value>1</value>
+</property>
+<property type='i'>
+<key><![CDATA[textAlignH]]></key>
+<value>2</value>
+</property>
+<property type='i'>
+<key><![CDATA[textAlignV]]></key>
+<value>2</value>
+</property>
+<property type='b'>
+<key><![CDATA[textClip]]></key>
+<value>1</value>
+</property>
+<property type='c'>
+<key><![CDATA[textColor]]></key>
+<value>
+<r>1</r>
+<g>1</g>
+<b>1</b>
+<a>1</a>
+</value>
+</property>
+<property type='i'>
+<key><![CDATA[textLength]]></key>
+<value>0</value>
+</property>
+<property type='i'>
+<key><![CDATA[textSize]]></key>
+<value>14</value>
+</property>
+<property type='b'>
+<key><![CDATA[visible]]></key>
+<value>1</value>
+</property>
+</properties>
+<values>
+<value>
+<key><![CDATA[text]]></key>
+<locked>0</locked>
+<lockedDefaultCurrent>1</lockedDefaultCurrent>
+<default><![CDATA[Dump To Sysex]]></default>
+<defaultPull>0</defaultPull>
+</value>
+<value>
+<key><![CDATA[touch]]></key>
+<locked>0</locked>
+<lockedDefaultCurrent>0</lockedDefaultCurrent>
+<default><![CDATA[false]]></default>
+<defaultPull>0</defaultPull>
+</value>
+</values>
+</node>
+</children>
+</node>
+</lexml>
