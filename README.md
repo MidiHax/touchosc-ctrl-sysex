@@ -25,6 +25,8 @@ The function will locate the specified control in the sysex payload, and then se
 # Example Panel
 This repo contains an example panel. Activating the "Dump to Sysex" button will send the data in the text control (with the Lord Varys quote) out via sysex message on connection ID 1. This sysex data can be captured by your favorite sysex librarian (such as MIDI-OX). If you play the sysex message back to TouchOSC (on any connection ID), it will reload the quote text back into the example panel's text control.
 
+![Panel Screen Cap](https://github.com/MidiHax/touchosc-ctrl-sysex/blob/main/preview.png)
+
 # Links
  * [Hexler TouchOSC](https://hexler.net/touchosc)
  * [TouchOSC Scripting API](https://hexler.net/pub/touchosc/scripting-api.html)
