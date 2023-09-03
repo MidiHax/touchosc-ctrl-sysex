@@ -29,6 +29,7 @@ This repo contains an example panel. Activating the "Dump to Sysex" button will 
  * [Hexler TouchOSC](https://hexler.net/touchosc)
  * [TouchOSC Scripting API](https://hexler.net/pub/touchosc/scripting-api.html)
  * [MIDI-OX](http://www.midiox.com/)
+ * [Roland Checksum algorithm](https://www.vguitarforums.com/smf/index.php?topic=20544.0)
 
 # The Code
 ```
