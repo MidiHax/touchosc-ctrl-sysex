@@ -27,6 +27,17 @@ This repo contains an example panel. Activating the "Dump to Sysex" button will 
 
 ![Panel Screen Cap](https://github.com/MidiHax/touchosc-ctrl-sysex/blob/main/preview.png)
 
+# Sysex Data Format
+| Byte Index  | Value | Purpose |
+| ------------- | ------------- | ------------- |
+| 0  | 0xF0  | Sysex Status Byte |
+| 1 .. 3  | 0x00 0x02 0x5A  | Manufacturer ID |
+| 4 | 0x00 or 0x01 | Opcode: 00 = use tag property, 01 = use values.text property |
+| 5 .. n | < ASCII encoded data > | Control name, Null (0x00) terminated |
+| n + 1 .. m | < ASCII encoded data > | Data from property specified by opcode, Null (0x00) terminated |
+| m + 1 | < Checksum > | Computed using Roland argorithm: include opcode, control name, and data bytes (4 .. m) |
+| m + 2 | 0xF7 | End of Sysex |
+
 # Links
  * [Hexler TouchOSC](https://hexler.net/touchosc)
  * [TouchOSC Scripting API](https://hexler.net/pub/touchosc/scripting-api.html)
